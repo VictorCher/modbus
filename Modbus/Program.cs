@@ -27,19 +27,18 @@ namespace Modbus
 
         static void Main(string[] args)
         {
-            byte id = 31;
+            // Ввод данных
+            byte id = 1;
             byte func = 3;
-            ushort adr = 50;
+            ushort adr = 1;
             ushort quantity = 1;
-            
-            Array.Reverse(BitConverter.GetBytes(adr));
-            Array.Reverse(BitConverter.GetBytes(quantity));
+            // Формирование сообщения
             byte[] ADR = BitConverter.GetBytes(adr);
             byte[] QUANTITY = BitConverter.GetBytes(quantity);
             byte[] message = { id, func, ADR[1], ADR[0], QUANTITY[1], QUANTITY[0] };
             byte[] CRC16 = CRC16_MODBUS(message);
             byte[] ADU = { id, func, ADR[1], ADR[0], QUANTITY[1], QUANTITY[0], CRC16[0], CRC16[1] };
-
+            // Вывод на экран
             foreach (byte b in ADU)
                  Console.Write($"{b:X2} ");
             

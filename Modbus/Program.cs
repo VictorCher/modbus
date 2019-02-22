@@ -8,7 +8,7 @@ namespace Modbus
 {
     class Program
     {
-        static ushort CRC16_MODBUS(string key)
+        static byte[] CRC16_MODBUS(byte[] key)
         {
             ushort hash = 0xFFFF;
             const ushort polynom = 0xA001;
@@ -22,15 +22,27 @@ namespace Modbus
                     if (val == true) hash ^= polynom;
                 }
             }
-            return hash;
+            return BitConverter.GetBytes(hash);
         }
+
         static void Main(string[] args)
         {
-            ushort crc16 = CRC16_MODBUS("12");
-            Console.WriteLine(crc16.ToString());
-            Console.WriteLine(Convert.ToString(crc16,16));
+            byte id = 31;
+            byte func = 3;
+            ushort adr = 50;
+            ushort quantity = 1;
+            
+            Array.Reverse(BitConverter.GetBytes(adr));
+            Array.Reverse(BitConverter.GetBytes(quantity));
+            byte[] ADR = BitConverter.GetBytes(adr);
+            byte[] QUANTITY = BitConverter.GetBytes(quantity);
+            byte[] message = { id, func, ADR[1], ADR[0], QUANTITY[1], QUANTITY[0] };
+            byte[] CRC16 = CRC16_MODBUS(message);
+            byte[] ADU = { id, func, ADR[1], ADR[0], QUANTITY[1], QUANTITY[0], CRC16[0], CRC16[1] };
 
-
+            foreach (byte b in ADU)
+                 Console.Write($"{b:X2} ");
+            
             Console.ReadKey();
         }
     }

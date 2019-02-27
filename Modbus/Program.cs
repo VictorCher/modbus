@@ -18,10 +18,6 @@ namespace Modbus
             MainForm form = new MainForm();
             form.Show();
             Application.Run(form);
-
-            
-
-            Console.ReadKey();
         }
     }
 }
